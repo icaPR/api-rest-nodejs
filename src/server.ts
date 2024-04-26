@@ -1,12 +1,9 @@
 import fastify from "fastify";
-import { knex } from "./database";
+import { transactionRoutes } from "./routes/transactions";
 
 const app = fastify();
 
-app.get("/test", async () => {
-  const test = await knex("sqlite_scheme").select("*");
-  return test;
-});
+app.register(transactionRoutes, { prefix: "transactions" });
 
 app
   .listen({
