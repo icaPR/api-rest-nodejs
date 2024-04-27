@@ -1,9 +1,12 @@
 import fastify from "fastify";
-import { transactionRoutes } from "./routes/transactions";
+import cookie from "@fastify/cookie";
+import { transactions } from "./routes/transactions";
 
 const app = fastify();
 
-app.register(transactionRoutes, { prefix: "transactions" });
+app.register(cookie);
+
+app.register(transactions, { prefix: "transactions" });
 
 app
   .listen({
