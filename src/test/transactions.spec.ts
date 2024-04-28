@@ -83,4 +83,34 @@ describe("Transactions routes", () => {
       );
     }
   });
+
+  it("should list the summary", async () => {
+    const createTransactionResponse = await request(app.server)
+      .post("/transactions")
+      .send({
+        title: "New transaction",
+        amount: 100,
+        type: "credit",
+      });
+
+    const cookies = createTransactionResponse.get("Set-Cookie");
+
+    if (cookies) {
+      await request(app.server)
+        .post("/transactions")
+        .set("Cookie", cookies)
+        .send({
+          title: "New transaction",
+          amount: 25,
+          type: "debit",
+        });
+
+      const listAmountResponse = await request(app.server)
+        .get("/transactions/summary")
+        .set("Cookie", cookies)
+        .expect(200);
+
+      expect(listAmountResponse.body.summary).toEqual({ amount: 75 });
+    }
+  });
 });
